@@ -20,6 +20,7 @@
 from __future__ import print_function
 
 import argparse
+import os
 import sys
 import subprocess
 
@@ -30,10 +31,17 @@ DOCKER_IMAGE = 'gimoh/devops-utils'  ##INIT_VAR:DOCKER_IMAGE##
 
 def main(args=sys.argv[1:]):
     """Run a program in devops-utils container."""
+    self_name = os.path.basename(sys.argv[0])
+
     parser = argparse.ArgumentParser(description=main.__doc__, add_help=False,
                                      prefix_chars='+')
-    parser.add_argument('prog', help='program to run (e.g.: install, {})'.
-                                     format(', '.join(PROGS)))
+
+    if self_name in ('external-runner', 'devops-utils'):
+        parser.add_argument('prog', help='program to run (e.g.: install, {})'.
+                                        format(', '.join(PROGS)))
+    else:
+        parser.set_defaults(prog=self_name)
+
     parser.add_argument('+O', '++docker-opt', action='append',
                         help='pass specified long-style option to docker run')
     parser.add_argument('++help', action='store_true',
