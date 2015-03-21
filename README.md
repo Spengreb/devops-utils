@@ -35,3 +35,29 @@ image, you can override it:
 
 
 ## Usage
+
+### Derived Image
+
+First usage scenario is when you build a derived image containing your
+source (e.g. Ansible playbooks, etc.).  An example `Dockerfile`:
+
+    FROM gimoh/devops-utils
+
+    ADD . /opt/app
+    WORKDIR /opt/app
+
+You may also want to add Ansible roles, or python modules, e.g.:
+
+    FROM gimoh/devops-utils
+
+    ADD reqs-*[lt] /opt/app/
+    RUN ansible-galaxy install --role-file /opt/app/reqs-ansible.yml
+    RUN pip install --requirement /opt/app/reqs-py.txt
+    ADD . /opt/app
+    WORKDIR /opt/app
+
+Then to use:
+
+    ansible-playbook -i hosts.ini your-playbook.yml
+    # or
+    fab -l
