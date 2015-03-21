@@ -18,3 +18,39 @@
 # along with devops-utils.  If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import print_function
+
+import argparse
+import sys
+import subprocess
+
+
+def main(args=sys.argv[1:]):
+    """Run a program in devops-utils container."""
+    parser = argparse.ArgumentParser(description=main.__doc__, add_help=False,
+                                     prefix_chars='+')
+    parser.add_argument('prog', help='program to run')
+    parser.add_argument('+O', '++docker-opt', action='append',
+                        help='pass specified long-style option to docker run')
+    parser.add_argument('++help', action='store_true',
+                        help='show this help message and exit')
+    parser.set_defaults(docker_opt=[])
+
+    args, prog_args = parser.parse_known_args(args)
+
+    if args.help:
+        parser.print_help()
+        parser.exit()
+
+    docker_opts = '-i -t --rm'.split()
+
+    docker_opts.extend(['--%s' % opt for opt in args.docker_opt])
+    cmd = ['docker', 'run']
+    cmd.extend(docker_opts)
+    cmd.extend(['gimoh/devops-utils', args.prog])
+    cmd.extend(prog_args)
+
+    subprocess.check_call(cmd)
+
+
+if __name__ == '__main__':
+    main()
