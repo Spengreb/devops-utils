@@ -23,6 +23,7 @@ import argparse
 import os
 import shutil
 import sys
+import re
 import textwrap
 
 from subprocess import check_call, CalledProcessError
@@ -54,7 +55,17 @@ def install():
         return 2
 
     print('installing runner')
-    shutil.copy('external-runner', '/target/devops-utils')
+    replacements = {'PROGS': PROGS, 'DOCKER_IMAGE': 'gimoh/devops-utils'}
+    replacement_var_marker = re.compile('##INIT_VAR:([^#]+)##$')
+    with open('external-runner', 'r') as sfobj,\
+         open('/target/devops-utils', 'w') as dfobj:
+        for line in sfobj:
+            replacement_var = replacement_var_marker.search(line.rstrip())
+            if replacement_var:
+                var = replacement_var.group(1)
+                line = '{} = {!r}\n'.format(var, replacements[var])
+            dfobj.write(line)
+    shutil.copystat('external-runner', '/target/devops-utils')
 
     print('installing links ... ', end='')
     for prog in PROGS:

@@ -24,11 +24,16 @@ import sys
 import subprocess
 
 
+PROGS = ()  ##INIT_VAR:PROGS##
+DOCKER_IMAGE = 'gimoh/devops-utils'  ##INIT_VAR:DOCKER_IMAGE##
+
+
 def main(args=sys.argv[1:]):
     """Run a program in devops-utils container."""
     parser = argparse.ArgumentParser(description=main.__doc__, add_help=False,
                                      prefix_chars='+')
-    parser.add_argument('prog', help='program to run')
+    parser.add_argument('prog', help='program to run (e.g.: install, {})'.
+                                     format(', '.join(PROGS)))
     parser.add_argument('+O', '++docker-opt', action='append',
                         help='pass specified long-style option to docker run')
     parser.add_argument('++help', action='store_true',
@@ -46,7 +51,7 @@ def main(args=sys.argv[1:]):
     docker_opts.extend(['--%s' % opt for opt in args.docker_opt])
     cmd = ['docker', 'run']
     cmd.extend(docker_opts)
-    cmd.extend(['gimoh/devops-utils', args.prog])
+    cmd.extend([DOCKER_IMAGE, args.prog])
     cmd.extend(prog_args)
 
     subprocess.check_call(cmd)
