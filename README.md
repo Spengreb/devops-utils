@@ -26,5 +26,12 @@ runner.  The result will be along those lines:
     fab -> devops-utils
     ansible -> devops-utils
 
+By default the runner will invoke `docker run` with `gimoh/devops-utils`
+image, if you want to use another name, e.g. when working with a derived
+image, you can override it:
+
+    docker run -v $HOME/.local/bin:/target --rm gimoh/devops-utils \
+      install --image-name=$USER/devops-utils
+
 
 ## Usage

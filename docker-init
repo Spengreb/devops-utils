@@ -39,11 +39,19 @@ def run(prog, args):
     """Run the specified program."""
     os.execvp(prog, (prog,) + tuple(args))
 
-def install():
+def install(args):
     """Install a runner and shortcuts to all supported programs.
 
     The runner will execute the command it's run as via docker run.
     """
+    parser = argparse.ArgumentParser(prog='install',
+                                     description=install.__doc__)
+    parser.add_argument(
+        '--image-name', help=('name of docker image to use when running '
+                              'commands via runner (def: %(default)s)'))
+    parser.set_defaults(image_name='gimoh/devops-utils')
+    args = parser.parse_args(args)
+
     try:
         check_call(('mountpoint', '-q', '/target'))
     except CalledProcessError:
@@ -55,7 +63,7 @@ def install():
         return 2
 
     print('installing runner')
-    replacements = {'PROGS': PROGS, 'DOCKER_IMAGE': 'gimoh/devops-utils'}
+    replacements = {'PROGS': PROGS, 'DOCKER_IMAGE': args.image_name}
     replacement_var_marker = re.compile('##INIT_VAR:([^#]+)##$')
     with open('external-runner', 'r') as sfobj,\
          open('/target/devops-utils', 'w') as dfobj:
@@ -79,15 +87,15 @@ def install():
 
 def main(args=sys.argv[1:]):
     """Run a program in devops-utils container."""
-    parser = argparse.ArgumentParser(description=main.__doc__)
+    parser = argparse.ArgumentParser(description=main.__doc__, add_help=False)
     parser.add_argument('prog', help='program to run (e.g.: install, {})'.
                                      format(', '.join(PROGS)))
 
     args, prog_args = parser.parse_known_args(args)
     print({'args': args, 'prog_args': prog_args})
-    
+
     if args.prog == 'install':
-        sys.exit(install())
+        sys.exit(install(prog_args))
 
     run(args.prog, prog_args)
 
