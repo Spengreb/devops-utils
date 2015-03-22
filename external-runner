@@ -29,13 +29,35 @@ PROGS = ()  ##INIT_VAR:PROGS##
 DOCKER_IMAGE = 'gimoh/devops-utils'  ##INIT_VAR:DOCKER_IMAGE##
 
 
-def main(args=sys.argv[1:]):
-    """Run a program in devops-utils container."""
+class DockerRunCommand(object):
+    """docker run command"""
+    def __init__(self, prog, prog_args):
+        self.docker_args = []
+        self.prog = prog
+        self.prog_args = list(prog_args)
+
+    @property
+    def cmd(self):
+        cmd = ['docker', 'run']
+        cmd.extend(self.docker_args)
+        cmd.extend([DOCKER_IMAGE, self.prog])
+        cmd.extend(self.prog_args)
+        return cmd
+
+class Builders(list):
+    def __call__(self, *args):
+        for builder in self:
+            builder(*args)
+
+argparse_builders = Builders()
+docker_run_builders = Builders()
+
+argparse_builder = argparse_builders.append
+docker_run_builder = docker_run_builders.append
+
+@argparse_builder
+def argparse_base(parser):
     self_name = os.path.basename(sys.argv[0])
-
-    parser = argparse.ArgumentParser(description=main.__doc__, add_help=False,
-                                     prefix_chars='+')
-
     if self_name in ('external-runner', 'devops-utils'):
         parser.add_argument('prog', help='program to run (e.g.: install, {})'.
                                         format(', '.join(PROGS)))
@@ -48,21 +70,29 @@ def main(args=sys.argv[1:]):
                         help='show this help message and exit')
     parser.set_defaults(docker_opt=[])
 
+@docker_run_builder
+def docker_run_base(args, docker_run):
+    docker_run.docker_args.extend('-i -t --rm'.split())
+
+@docker_run_builder
+def docker_run_opts(args, docker_run):
+    docker_run.docker_args.extend(['--%s' % opt for opt in args.docker_opt])
+
+def main(args=sys.argv[1:]):
+    """Run a program in devops-utils container."""
+    parser = argparse.ArgumentParser(description=main.__doc__, add_help=False,
+                                     prefix_chars='+')
+    argparse_builders(parser)
     args, prog_args = parser.parse_known_args(args)
 
     if args.help:
         parser.print_help()
         parser.exit()
 
-    docker_opts = '-i -t --rm'.split()
+    docker_run = DockerRunCommand(args.prog, prog_args)
+    docker_run_builders(args, docker_run)
 
-    docker_opts.extend(['--%s' % opt for opt in args.docker_opt])
-    cmd = ['docker', 'run']
-    cmd.extend(docker_opts)
-    cmd.extend([DOCKER_IMAGE, args.prog])
-    cmd.extend(prog_args)
-
-    subprocess.check_call(cmd)
+    subprocess.check_call(docker_run.cmd)
 
 
 if __name__ == '__main__':
