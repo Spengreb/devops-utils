@@ -70,6 +70,11 @@ def argparse_base(parser):
                         help='show this help message and exit')
     parser.set_defaults(docker_opt=[])
 
+@argparse_builder
+def argparse_src(parser):
+    parser.add_argument('++dev', action='store_true',
+                        help='mount source instead of using copy in the image')
+
 @docker_run_builder
 def docker_run_base(args, docker_run):
     docker_run.docker_args.extend('-i -t --rm'.split())
@@ -77,6 +82,14 @@ def docker_run_base(args, docker_run):
 @docker_run_builder
 def docker_run_opts(args, docker_run):
     docker_run.docker_args.extend(['--%s' % opt for opt in args.docker_opt])
+
+@docker_run_builder
+def docker_run_src(args, docker_run):
+    if args.dev:
+        docker_run.docker_args.extend([
+            '-v', '{}:/opt/app'.format(os.getcwd()),
+            '-w', '/opt/app',
+            ])
 
 def main(args=sys.argv[1:]):
     """Run a program in devops-utils container."""

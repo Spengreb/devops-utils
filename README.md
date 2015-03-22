@@ -61,3 +61,17 @@ Then to use:
     ansible-playbook -i hosts.ini your-playbook.yml
     # or
     fab -l
+
+### Development / Mounted Source
+
+The second usage scenario is when you want to use your development
+tree as source.  This may be done with either the original or derived
+image:
+
+    devops-utils ++dev ansible-playbook -i hosts.ini your-playbook.yml
+    # or
+    ansible-playbook ++dev -i hosts.ini your-playbook.yml
+
+Notice that parameters to the runner itself start with `+` instead of
+the usual `-`, this is to make them easier to differentiate from
+parameters to the program being run.
