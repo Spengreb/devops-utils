@@ -36,6 +36,10 @@ image, you can override it:
 
 ## Usage
 
+When starting a container via the external runner, the SSH agent socket
+will be passed in to the container if available, to enable SSH
+authentication using own keys.
+
 ### Derived Image
 
 First usage scenario is when you build a derived image containing your
