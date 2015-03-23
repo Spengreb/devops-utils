@@ -91,6 +91,14 @@ def docker_run_src(args, docker_run):
             '-w', '/opt/app',
             ])
 
+@docker_run_builder
+def docker_run_ssh_agent(args, docker_run):
+    if 'SSH_AUTH_SOCK' not in os.environ:
+        return
+    docker_run.docker_args.extend([
+        '-v', '{}:/tmp/ssh_agent'.format(os.environ['SSH_AUTH_SOCK']),
+        ])
+
 def main(args=sys.argv[1:]):
     """Run a program in devops-utils container."""
     parser = argparse.ArgumentParser(description=main.__doc__, add_help=False,

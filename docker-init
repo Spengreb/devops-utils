@@ -35,8 +35,14 @@ PROGS = (
     )
 
 
+def init_ssh_agent():
+    if not os.path.exists('/tmp/ssh_agent'):
+        return
+    os.environ['SSH_AUTH_SOCK'] = '/tmp/ssh_agent'
+
 def run(prog, args):
     """Run the specified program."""
+    init_ssh_agent()
     os.execvp(prog, (prog,) + tuple(args))
 
 def install(args):
