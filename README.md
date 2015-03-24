@@ -40,6 +40,14 @@ When starting a container via the external runner, the SSH agent socket
 will be passed in to the container if available, to enable SSH
 authentication using own keys.
 
+Alternatively, you can use `++key FILE` option to pass a specific key
+and it will be injected into the container as `/root/.ssh/id_rsa` at
+runtime.
+
+SSH config file `~/.ssh/config` is also injected into the container if
+it exists so that any special configuration for particular hosts is
+respected.
+
 ### Derived Image
 
 First usage scenario is when you build a derived image containing your
