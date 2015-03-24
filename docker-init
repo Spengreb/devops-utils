@@ -44,21 +44,29 @@ def install_file(src, dst, owner, group, mode):
     os.chown(dst, uid, gid)
     os.chmod(dst, mode)
 
+def install_file_if_exists(src, dst, owner, group, mode):
+    if not os.path.exists(src):
+        return
+    install_file(src, dst, owner, group, mode)
+
 def init_ssh_agent():
     if not os.path.exists('/tmp/ssh_agent'):
         return
     os.environ['SSH_AUTH_SOCK'] = '/tmp/ssh_agent'
 
 def init_ssh_key():
-    if not os.path.exists('/var/local/ssh.key'):
-        return
-    install_file('/var/local/ssh.key', '/root/.ssh/id_rsa',
-                 'root', 'root', 0o600)
+    install_file_if_exists('/var/local/ssh.key', '/root/.ssh/id_rsa',
+                           'root', 'root', 0o600)
+
+def init_ssh_config():
+    install_file_if_exists('/var/local/ssh_config', '/root/.ssh/config',
+                           'root', 'root', 0o600)
 
 def run(prog, args):
     """Run the specified program."""
     init_ssh_agent()
     init_ssh_key()
+    init_ssh_config()
     os.execvp(prog, (prog,) + tuple(args))
 
 def install(args):

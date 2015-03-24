@@ -114,6 +114,15 @@ def docker_run_ssh_key(args, docker_run):
         '-v', '{}:/var/local/ssh.key'.format(key),
         ])
 
+@docker_run_builder
+def docker_run_ssh_config(args, docker_run):
+    src = os.path.join(os.path.expanduser('~/.ssh'), 'config')
+    if not os.path.exists(src):
+        return
+    docker_run.docker_args.extend([
+        '-v', '{}:/var/local/ssh_config'.format(src),
+        ])
+
 def main(args=sys.argv[1:]):
     """Run a program in devops-utils container."""
     parser = argparse.ArgumentParser(description=main.__doc__, add_help=False,
