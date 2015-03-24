@@ -20,7 +20,9 @@
 from __future__ import print_function
 
 import argparse
+import grp
 import os
+import pwd
 import shutil
 import sys
 import re
@@ -35,14 +37,28 @@ PROGS = (
     )
 
 
+def install_file(src, dst, owner, group, mode):
+    shutil.copy(src, dst)
+    uid = pwd.getpwnam(owner).pw_uid
+    gid = grp.getgrnam(group).gr_gid
+    os.chown(dst, uid, gid)
+    os.chmod(dst, mode)
+
 def init_ssh_agent():
     if not os.path.exists('/tmp/ssh_agent'):
         return
     os.environ['SSH_AUTH_SOCK'] = '/tmp/ssh_agent'
 
+def init_ssh_key():
+    if not os.path.exists('/var/local/ssh.key'):
+        return
+    install_file('/var/local/ssh.key', '/root/.ssh/id_rsa',
+                 'root', 'root', 0o600)
+
 def run(prog, args):
     """Run the specified program."""
     init_ssh_agent()
+    init_ssh_key()
     os.execvp(prog, (prog,) + tuple(args))
 
 def install(args):
