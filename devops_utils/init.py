@@ -19,7 +19,10 @@
 # along with devops-utils.  If not, see <http://www.gnu.org/licenses/>.
 
 import glob
+import grp
 import os
+import pwd
+import shutil
 
 from devops_utils import PLUGIN_DIR
 
@@ -43,3 +46,23 @@ def load_plugins(type_, globals):
         return
     for fn in glob.glob(os.path.join(dir, '*.py')):
         execfile(fn, globals)
+
+def install_file(src, dst, owner, group, mode):
+    shutil.copy(src, dst)
+    uid = pwd.getpwnam(owner).pw_uid
+    gid = grp.getgrnam(group).gr_gid
+    os.chown(dst, uid, gid)
+    os.chmod(dst, mode)
+
+def install_file_if_exists(src, dst, owner, group, mode):
+    if not os.path.exists(src):
+        return
+    install_file(src, dst, owner, group, mode)
+
+def run(prog, args):
+    """Run the specified program."""
+    load_plugins('init', globals())
+    init_ssh_agent()
+    init_ssh_key()
+    init_ssh_config()
+    os.execvp(prog, (prog,) + tuple(args))

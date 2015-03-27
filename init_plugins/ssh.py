@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 #
 # Copyright 2015 gimoh
 #
@@ -18,15 +17,15 @@
 # You should have received a copy of the GNU General Public License
 # along with devops-utils.  If not, see <http://www.gnu.org/licenses/>.
 
-"""devops-utils - devops-utils image helper tools"""
+def init_ssh_agent():
+    if not os.path.exists('/tmp/ssh_agent'):
+        return
+    os.environ['SSH_AUTH_SOCK'] = '/tmp/ssh_agent'
 
-__author__ = 'gimoh'
-__email__ = 'gimoh@bitmessage.ch'
-__version__ = '0.1.0'
+def init_ssh_key():
+    install_file_if_exists('/var/local/ssh.key', '/root/.ssh/id_rsa',
+                           'root', 'root', 0o600)
 
-
-PROGS = (
-    'ansible', 'ansible-doc', 'ansible-galaxy', 'ansible-playbook',
-    'ansible-vault', 'fab',
-    )
-PLUGIN_DIR = '/etc/devops-utils'
+def init_ssh_config():
+    install_file_if_exists('/var/local/ssh_config', '/root/.ssh/config',
+                           'root', 'root', 0o600)
