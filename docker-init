@@ -27,13 +27,8 @@ import shutil
 import sys
 import re
 
+from devops_utils import PROGS
 from devops_utils.install import install
-
-
-PROGS = (
-    'ansible', 'ansible-doc', 'ansible-galaxy', 'ansible-playbook',
-    'ansible-vault', 'fab',
-    )
 
 
 def install_file(src, dst, owner, group, mode):

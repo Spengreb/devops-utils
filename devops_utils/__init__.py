@@ -23,3 +23,9 @@
 __author__ = 'gimoh'
 __email__ = 'gimoh@bitmessage.ch'
 __version__ = '0.1.0'
+
+
+PROGS = (
+    'ansible', 'ansible-doc', 'ansible-galaxy', 'ansible-playbook',
+    'ansible-vault', 'fab',
+    )

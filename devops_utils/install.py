@@ -18,6 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with devops-utils.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import print_function
+
 import argparse
 import re
 import os
@@ -25,6 +27,8 @@ import shutil
 import textwrap
 
 from subprocess import check_call, CalledProcessError
+
+from devops_utils import PROGS
 
 
 class Replacer(object):
@@ -77,14 +81,9 @@ def install(args):
 
     print('installing runner')
     replacements = {'PROGS': PROGS, 'DOCKER_IMAGE': args.image_name}
-    replacement_var_marker = re.compile('##INIT_VAR:([^#]+)##$')
     with open('external-runner', 'r') as sfobj,\
          open('/target/devops-utils', 'w') as dfobj:
-        for line in sfobj:
-            replacement_var = replacement_var_marker.search(line.rstrip())
-            if replacement_var:
-                var = replacement_var.group(1)
-                line = '{} = {!r}\n'.format(var, replacements[var])
+        for line in Replacer(sfobj, replacements):
             dfobj.write(line)
     shutil.copystat('external-runner', '/target/devops-utils')
 
