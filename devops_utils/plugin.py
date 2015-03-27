@@ -18,27 +18,28 @@
 # You should have received a copy of the GNU General Public License
 # along with devops-utils.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Tests for `devops_utils.install` module."""
-
+import glob
 import os
 
-import pytest
-
-import devops_utils
+from devops_utils import PLUGIN_DIR
 
 
-class TestLoadPlugins(object):
-    def test_load(self, monkeypatch, tmpdir):
-        monkeypatch.setattr(devops_utils, 'PLUGIN_DIR', '.')
-        monkeypatch.chdir(tmpdir)
+def load_plugins(type_, globals):
+    """Load plugins of given type.
 
-        os.mkdir('init_plugins')
-        with open('init_plugins/test.py', 'w') as fobj:
-            fobj.write('BAR = FOO\nFOO = 2\n')
+    The plugin files are looked up in ${type}_plugins directory under
+    PLUGIN_DIR.  They are execfile()d in the global namespace of the
+    module.
 
-        from devops_utils import init
-        ctx = {'FOO': 1}
-        init.load_plugins('init', ctx)
+    The reason the plugins are exec'ed and not imported is so that it
+    is easier for derived images to add plugins, as they can just drop
+    files into a known directory.
 
-        assert ctx['FOO'] == 2
-        assert 'BAR' in ctx and ctx['BAR'] == 1
+    :param str type_: type of plugins, i.e. init or runner
+    :param dict globals: as for execfile()
+    """
+    dir = os.path.join(PLUGIN_DIR, type_ + '_plugins')
+    if not os.path.isdir(dir):
+        return
+    for fn in glob.glob(os.path.join(dir, '*.py')):
+        execfile(fn, globals)

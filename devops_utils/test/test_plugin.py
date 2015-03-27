@@ -18,30 +18,27 @@
 # You should have received a copy of the GNU General Public License
 # along with devops-utils.  If not, see <http://www.gnu.org/licenses/>.
 
-import grp
+"""Tests for `devops_utils.plugin` module."""
+
 import os
-import pwd
-import shutil
 
-from devops_utils.plugin import load_plugins
+import pytest
+
+import devops_utils
 
 
-def install_file(src, dst, owner, group, mode):
-    shutil.copy(src, dst)
-    uid = pwd.getpwnam(owner).pw_uid
-    gid = grp.getgrnam(group).gr_gid
-    os.chown(dst, uid, gid)
-    os.chmod(dst, mode)
+class TestLoadPlugins(object):
+    def test_load(self, monkeypatch, tmpdir):
+        monkeypatch.setattr(devops_utils, 'PLUGIN_DIR', '.')
+        monkeypatch.chdir(tmpdir)
 
-def install_file_if_exists(src, dst, owner, group, mode):
-    if not os.path.exists(src):
-        return
-    install_file(src, dst, owner, group, mode)
+        os.mkdir('init_plugins')
+        with open('init_plugins/test.py', 'w') as fobj:
+            fobj.write('BAR = FOO\nFOO = 2\n')
 
-def run(prog, args):
-    """Run the specified program."""
-    load_plugins('init', globals())
-    init_ssh_agent()
-    init_ssh_key()
-    init_ssh_config()
-    os.execvp(prog, (prog,) + tuple(args))
+        from devops_utils import plugin
+        ctx = {'FOO': 1}
+        plugin.load_plugins('init', ctx)
+
+        assert ctx['FOO'] == 2
+        assert 'BAR' in ctx and ctx['BAR'] == 1
