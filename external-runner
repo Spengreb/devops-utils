@@ -26,8 +26,8 @@ import sys
 import subprocess
 
 
-PROGS = ()  ##INIT_VAR:PROGS##
-DOCKER_IMAGE = 'gimoh/devops-utils'  ##INIT_VAR:DOCKER_IMAGE##
+PROGS = ()  ##INIT:VAR:PROGS##
+DOCKER_IMAGE = 'gimoh/devops-utils'  ##INIT:VAR:DOCKER_IMAGE##
 
 
 class DockerRunCommand(object):

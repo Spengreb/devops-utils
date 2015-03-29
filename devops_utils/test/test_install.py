@@ -36,8 +36,8 @@ contents = [
         '''\
 #!/usr/bin/python
 import os
-PROGS = ()  ##INIT_VAR:PROGS##
-DOCKER_IMAGE = 'gimoh/devops-utils'  ##INIT_VAR:DOCKER_IMAGE##
+PROGS = ()  ##INIT:VAR:PROGS##
+DOCKER_IMAGE = 'gimoh/devops-utils'  ##INIT:VAR:DOCKER_IMAGE##
 FOO = 0
 ''',
         '''\

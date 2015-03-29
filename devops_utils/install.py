@@ -31,14 +31,25 @@ from subprocess import check_call, CalledProcessError
 from devops_utils import PROGS
 
 
+class InvalidOperator(Exception):
+    """Invalid operation passed through Replacer."""
+
 class Replacer(object):
     """Used to insert/replace chunks of code in a stream of lines.
 
     This is used to embed some values into the runner script (as it
     doesn't have access to them from outside a container) when
     installing it on the host system.
+
+    Iterating through the object will yield lines from the input with
+    lines containing a special marker replaced.  The marker format is
+    `##INIT:OPERATOR[:PARAM]##` and should be followed by a newline.
+
+    The `OPERATOR` can be:
+     - `VAR`: `PARAM` specifies name of variable to look up and place
+       it's definition in output instead of the original line
     """
-    RE_VAR_MARKER = re.compile('##INIT_VAR:([^#]+)##$')
+    RE_MARKER = re.compile('##INIT:([^#]+)##$')
 
     def __init__(self, input, context):
         """
@@ -48,12 +59,19 @@ class Replacer(object):
         self.input = input
         self.context = context
 
+    def handle_var(self, var):
+        return '{} = {!r}\n'.format(var, self.context[var])
+
     def __iter__(self):
         for line in self.input:
-            replacement_var = self.RE_VAR_MARKER.search(line.rstrip())
-            if replacement_var:
-                var = replacement_var.group(1)
-                line = '{} = {!r}\n'.format(var, self.context[var])
+            match = self.RE_MARKER.search(line.rstrip())
+            if match:
+                op, _, param = match.group(1).partition(':')
+                try:
+                    func = getattr(self, 'handle_{}'.format(op.lower()))
+                except AttributeError as e:
+                    raise InvalidOperator(op)
+                line = func(param)
             yield line
 
 def install(args):
