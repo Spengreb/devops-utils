@@ -18,12 +18,18 @@
 # You should have received a copy of the GNU General Public License
 # along with devops-utils.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import print_function
+
+import argparse
 import grp
 import os
 import pwd
 import shutil
+import sys
 
+from devops_utils import PROGS
 from devops_utils.builders import Builders
+from devops_utils.install import install
 from devops_utils.plugin import load_plugins
 
 
@@ -47,3 +53,21 @@ def run(prog, args):
     load_plugins('init', globals())
     initializers()
     os.execvp(prog, (prog,) + tuple(args))
+
+def main(args=sys.argv[1:]):
+    """Run a program in devops-utils container."""
+    parser = argparse.ArgumentParser(description=main.__doc__, add_help=False)
+    parser.add_argument('prog', help='program to run (e.g.: install, {})'.
+                                     format(', '.join(PROGS)))
+
+    args, prog_args = parser.parse_known_args(args)
+    print({'args': args, 'prog_args': prog_args})
+
+    if args.prog == 'install':
+        sys.exit(install(prog_args))
+
+    run(args.prog, prog_args)
+
+
+if __name__ == '__main__':
+    main()

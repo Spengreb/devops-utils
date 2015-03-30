@@ -25,8 +25,8 @@ RUN pip install Fabric
 RUN install -d -o root -g root -m 700 /root/.ssh
 RUN mkdir /etc/devops-utils
 ADD . /opt/devops-utils
-RUN cd /opt/devops-utils && \
+RUN cd /opt/devops-utils && pip install . && \
     cp -r init_plugins runner_plugins /etc/devops-utils/
 
 WORKDIR /opt/devops-utils
-ENTRYPOINT ["/usr/bin/ssh-agent", "/opt/devops-utils/docker-init"]
+ENTRYPOINT ["/usr/bin/ssh-agent", "/usr/local/bin/docker-init"]

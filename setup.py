@@ -43,6 +43,11 @@ setup(
     include_package_data=True,
     install_requires=[
     ],
+    entry_points={
+        'console_scripts': [
+            'docker-init = devops_utils.init:main',
+        ],
+    },
     license='GPLv3',
     keywords='devops-utils docker',
     classifiers=[
