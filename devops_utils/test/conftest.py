@@ -27,9 +27,10 @@ import pytest
 import devops_utils
 
 
+devops_utils.PLUGIN_DIR = '.'
+
 @pytest.fixture
 def plugin_dir(monkeypatch, tmpdir):
-    monkeypatch.setattr(devops_utils, 'PLUGIN_DIR', '.')
     monkeypatch.chdir(tmpdir)
     return tmpdir
 
