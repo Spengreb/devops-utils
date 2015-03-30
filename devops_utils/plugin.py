@@ -24,17 +24,18 @@ import os
 from devops_utils import PLUGIN_DIR
 
 
-def get_plugins(type_):
+def get_plugins(type_, basedir=PLUGIN_DIR):
     """Return a tuple of filenames of plugins of a given type.
 
     :param str type_: type of plugins, i.e. init or runner
+    :param str basedir: base directory to look up plugins in
     """
-    dir = os.path.join(PLUGIN_DIR, type_ + '_plugins')
+    dir = os.path.join(basedir, type_ + '_plugins')
     if not os.path.isdir(dir):
         return ()
     return tuple(glob.glob(os.path.join(dir, '*.py')))
 
-def load_plugins(type_, globals):
+def load_plugins(type_, globals, basedir=PLUGIN_DIR):
     """Load plugins of given type.
 
     The plugin files are looked up in ${type}_plugins directory under
@@ -48,5 +49,5 @@ def load_plugins(type_, globals):
     :param str type_: type of plugins, i.e. init or runner
     :param dict globals: as for execfile()
     """
-    for fn in get_plugins(type_):
+    for fn in get_plugins(type_, basedir):
         execfile(fn, globals)

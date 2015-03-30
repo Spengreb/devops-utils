@@ -20,6 +20,8 @@
 
 """Tests for `devops_utils.plugin` module."""
 
+import os
+
 import pytest
 
 import devops_utils
@@ -36,6 +38,15 @@ class TestLoadPlugins(object):
         lst = plugin.get_plugins('init')
 
         assert lst == ('./init_plugins/test1.py', './init_plugins/test2.py')
+
+    def test_get_plugins_basedir(self, plugin_dir):
+        os.mkdir('subdir')
+        create_plugin('subdir/runner', 'test', 'FOO = 1\n')
+
+        from devops_utils import plugin
+        lst = plugin.get_plugins('runner', basedir='subdir')
+
+        assert lst == ('subdir/runner_plugins/test.py',)
 
     def test_load(self, plugin_dir):
         create_plugin('init', 'test', 'BAR = FOO\nFOO = 2\n')
