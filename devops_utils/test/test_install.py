@@ -48,6 +48,10 @@ DOCKER_IMAGE = 'test/devops-utils'
 FOO = 0
 '''
     ),
+    (
+        '''FOO ##INIT:MODULE:devops_utils.test.init_module_test##''',
+        '''BAR = 1\n'''
+    ),
 ]
 
 class TestReplacer(object):

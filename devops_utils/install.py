@@ -26,6 +26,7 @@ import os
 import shutil
 import textwrap
 
+from pkgutil import find_loader
 from subprocess import check_call, CalledProcessError
 
 from devops_utils import PROGS
@@ -46,6 +47,8 @@ class Replacer(object):
     `##INIT:OPERATOR[:PARAM]##` and should be followed by a newline.
 
     The `OPERATOR` can be:
+     - `MODULE`: `PARAM` specifies a python module whose contents
+       should be inserted instead of the original line
      - `VAR`: `PARAM` specifies name of variable to look up and place
        it's definition in output instead of the original line
     """
@@ -58,6 +61,10 @@ class Replacer(object):
         """
         self.input = input
         self.context = context
+
+    def handle_module(self, mod):
+        l = find_loader(mod)
+        return l.get_source()
 
     def handle_var(self, var):
         return '{} = {!r}\n'.format(var, self.context[var])
