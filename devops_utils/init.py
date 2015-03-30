@@ -23,6 +23,7 @@ import os
 import pwd
 import shutil
 
+from devops_utils.builders import Builders
 from devops_utils.plugin import load_plugins
 
 
@@ -38,10 +39,11 @@ def install_file_if_exists(src, dst, owner, group, mode):
         return
     install_file(src, dst, owner, group, mode)
 
+initializers = Builders()
+initfunc = initializers.append
+
 def run(prog, args):
     """Run the specified program."""
     load_plugins('init', globals())
-    init_ssh_agent()
-    init_ssh_key()
-    init_ssh_config()
+    initializers()
     os.execvp(prog, (prog,) + tuple(args))
