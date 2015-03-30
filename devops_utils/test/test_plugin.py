@@ -28,6 +28,15 @@ from conftest import create_plugin
 
 
 class TestLoadPlugins(object):
+    def test_get_plugins(self, plugin_dir):
+        create_plugin('init', 'test1', 'FOO = 1\n')
+        create_plugin('init', 'test2', 'BAR = 2\n')
+
+        from devops_utils import plugin
+        lst = plugin.get_plugins('init')
+
+        assert lst == ('./init_plugins/test1.py', './init_plugins/test2.py')
+
     def test_load(self, plugin_dir):
         create_plugin('init', 'test', 'BAR = FOO\nFOO = 2\n')
 
