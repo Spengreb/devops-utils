@@ -45,11 +45,7 @@ class DockerRunCommand(object):
         cmd.extend(self.prog_args)
         return cmd
 
-class Builders(list):
-    def __call__(self, *args):
-        for builder in self:
-            builder(*args)
-
+from devops_utils.builders import *  ##INIT:MODULE:devops_utils.builders##
 argparse_builders = Builders()
 docker_run_builders = Builders()
 
