@@ -20,8 +20,13 @@
 
 """Tests for `devops_utils.install` module."""
 
+import os
+
 import pytest
 
+import devops_utils
+
+from conftest import create_plugin
 from devops_utils import install
 
 try:
@@ -60,4 +65,13 @@ class TestReplacer(object):
         input = StringIO(input)
         context = {'PROGS': ('foo', 'bar'), 'DOCKER_IMAGE': 'test/devops-utils'}
         output = ''.join(list(install.Replacer(input, context)))
+        assert output == expected
+
+    def test_replace_plugins(self, plugin_dir):
+        create_plugin('runner', 'test1', 'FOO = 2\n')
+        create_plugin('runner', 'test2', 'BAR = 1\n')
+
+        input = StringIO('_src_load_plugins()  ##INIT:PLUGINS:runner##\n')
+        expected = 'FOO = 2\nBAR = 1\n'
+        output = ''.join(list(install.Replacer(input, {})))
         assert output == expected

@@ -29,7 +29,7 @@ import textwrap
 from pkgutil import find_loader
 from subprocess import check_call, CalledProcessError
 
-from devops_utils import PROGS
+from devops_utils import PROGS, plugin
 
 
 class InvalidOperator(Exception):
@@ -66,6 +66,14 @@ class Replacer(object):
         l = find_loader(mod)
         return l.get_source()
 
+    def handle_plugins(self, type_):
+        for fn in plugin.get_plugins('runner'):
+            with open(fn) as fobj:
+                for line in fobj:
+                    yield line
+        else:
+            yield ''
+
     def handle_var(self, var):
         return '{} = {!r}\n'.format(var, self.context[var])
 
@@ -79,7 +87,11 @@ class Replacer(object):
                 except AttributeError as e:
                     raise InvalidOperator(op)
                 line = func(param)
-            yield line
+            if isinstance(line, basestring):
+                yield line
+            else:
+                for generated in line:
+                    yield generated
 
 def install(args):
     """Install a runner and shortcuts to all supported programs.
