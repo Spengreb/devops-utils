@@ -57,6 +57,10 @@ FOO = 0
         '''FOO ##INIT:MODULE:devops_utils.test.init_module_test##''',
         '''BAR = 1\n'''
     ),
+    (
+        'FOO  ##INIT:SUPPRESS##\n',
+        ''
+    ),
 ]
 
 class TestReplacer(object):

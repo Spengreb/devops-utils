@@ -74,6 +74,9 @@ class Replacer(object):
         else:
             yield ''
 
+    def handle_suppress(self):
+        return ''
+
     def handle_var(self, var):
         return '{} = {!r}\n'.format(var, self.context[var])
 
@@ -86,7 +89,8 @@ class Replacer(object):
                     func = getattr(self, 'handle_{}'.format(op.lower()))
                 except AttributeError as e:
                     raise InvalidOperator(op)
-                line = func(param)
+                param = (param,) if param else ()  # for parameterless handlers
+                line = func(*param)
             if isinstance(line, basestring):
                 yield line
             else:
