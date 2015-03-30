@@ -28,13 +28,18 @@ import devops_utils
 
 
 class TestLoadPlugins(object):
+    def create_plugin(self, type_, name, contents):
+        dir = '{}_plugins'.format(type_)
+        if not os.path.isdir(dir):
+            os.mkdir(dir)
+        with open(os.path.join(dir, '{}.py'.format(name)), 'w') as fobj:
+            fobj.write(contents)
+
     def test_load(self, monkeypatch, tmpdir):
         monkeypatch.setattr(devops_utils, 'PLUGIN_DIR', '.')
         monkeypatch.chdir(tmpdir)
 
-        os.mkdir('init_plugins')
-        with open('init_plugins/test.py', 'w') as fobj:
-            fobj.write('BAR = FOO\nFOO = 2\n')
+        self.create_plugin('init', 'test', 'BAR = FOO\nFOO = 2\n')
 
         from devops_utils import plugin
         ctx = {'FOO': 1}
