@@ -18,22 +18,32 @@
 # You should have received a copy of the GNU General Public License
 # along with devops-utils.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Tests for `devops_utils.plugin` module."""
+"""Common fixtures and settings for `devops_utils` tests."""
+
+import os
 
 import pytest
 
 import devops_utils
 
-from conftest import create_plugin
 
+@pytest.fixture
+def plugin_dir(monkeypatch, tmpdir):
+    monkeypatch.setattr(devops_utils, 'PLUGIN_DIR', '.')
+    monkeypatch.chdir(tmpdir)
+    return tmpdir
 
-class TestLoadPlugins(object):
-    def test_load(self, plugin_dir):
-        create_plugin('init', 'test', 'BAR = FOO\nFOO = 2\n')
+def create_plugin(type_, name, contents):
+    """Create a plugin for tests.
 
-        from devops_utils import plugin
-        ctx = {'FOO': 1}
-        plugin.load_plugins('init', ctx)
+    The plugins are created relative to the current directory.
 
-        assert ctx['FOO'] == 2
-        assert 'BAR' in ctx and ctx['BAR'] == 1
+    :param str type_: type of plugins, i.e. init or runner
+    :param str name: name of the plugin (without extension)
+    :param str contents: contents of the plugin file
+    """
+    dir = '{}_plugins'.format(type_)
+    if not os.path.isdir(dir):
+        os.mkdir(dir)
+    with open(os.path.join(dir, '{}.py'.format(name)), 'w') as fobj:
+        fobj.write(contents)
