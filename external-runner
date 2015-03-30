@@ -67,15 +67,6 @@ def argparse_base(parser):
                         help='show this help message and exit')
     parser.set_defaults(docker_opt=[])
 
-@argparse_builder
-def argparse_src(parser):
-    parser.add_argument('++dev', action='store_true',
-                        help='mount source instead of using copy in the image')
-
-@argparse_builder
-def argparse_ssh_key(parser):
-    parser.add_argument('++key', help='SSH key to use')
-
 @docker_run_builder
 def docker_run_base(args, docker_run):
     docker_run.docker_args.extend('-i -t --rm'.split())
@@ -84,41 +75,9 @@ def docker_run_base(args, docker_run):
 def docker_run_opts(args, docker_run):
     docker_run.docker_args.extend(['--%s' % opt for opt in args.docker_opt])
 
-@docker_run_builder
-def docker_run_src(args, docker_run):
-    if args.dev:
-        docker_run.docker_args.extend([
-            '-v', '{}:/opt/app'.format(os.getcwd()),
-            '-w', '/opt/app',
-            ])
-
-@docker_run_builder
-def docker_run_ssh_agent(args, docker_run):
-    if 'SSH_AUTH_SOCK' not in os.environ:
-        return
-    docker_run.docker_args.extend([
-        '-v', '{}:/tmp/ssh_agent'.format(os.environ['SSH_AUTH_SOCK']),
-        ])
-
-@docker_run_builder
-def docker_run_ssh_key(args, docker_run):
-    if not args.key:
-        return
-    key = os.path.join(os.path.expanduser('~/.ssh'), args.key)
-    # can't mount it directly as ~/.ssh/id_rsa as ssh won't accept it without
-    # correct permissions; docker-init will do the rest
-    docker_run.docker_args.extend([
-        '-v', '{}:/var/local/ssh.key'.format(key),
-        ])
-
-@docker_run_builder
-def docker_run_ssh_config(args, docker_run):
-    src = os.path.join(os.path.expanduser('~/.ssh'), 'config')
-    if not os.path.exists(src):
-        return
-    docker_run.docker_args.extend([
-        '-v', '{}:/var/local/ssh_config'.format(src),
-        ])
+from devops_utils.plugin import load_plugins  ##INIT:SUPPRESS##
+BASEDIR=os.path.dirname(__file__)  ##INIT:SUPPRESS##
+load_plugins('runner', globals(), basedir=BASEDIR)  ##INIT:PLUGINS:runner##
 
 def main(args=sys.argv[1:]):
     """Run a program in devops-utils container."""
