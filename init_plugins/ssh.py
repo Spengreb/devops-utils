@@ -18,17 +18,17 @@
 # along with devops-utils.  If not, see <http://www.gnu.org/licenses/>.
 
 @initfunc
-def init_ssh_agent():
+def init_ssh_agent(prog, args):
     if not os.path.exists('/tmp/ssh_agent'):
         return
     os.environ['SSH_AUTH_SOCK'] = '/tmp/ssh_agent'
 
 @initfunc
-def init_ssh_key():
+def init_ssh_key(prog, args):
     install_file_if_exists('/var/local/ssh.key', '/root/.ssh/id_rsa',
                            'root', 'root', 0o600)
 
 @initfunc
-def init_ssh_config():
+def init_ssh_config(prog, args):
     install_file_if_exists('/var/local/ssh_config', '/root/.ssh/config',
                            'root', 'root', 0o600)

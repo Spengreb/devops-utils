@@ -47,11 +47,21 @@ def install_file_if_exists(src, dst, owner, group, mode):
 
 initializers = Builders()
 initfunc = initializers.append
+"""Register function as initializer.
+
+An initializer is executed on startup and can contribute to environment
+setup within the container.  The function will be executed with two
+arguments: ``prog`` and ``args``.  ``prog`` is the name/path to the
+program that will be executed by init.  ``args`` is a list of arguments
+it will be executed with.  The ``args`` list may be mutated to affect
+the final arguments.
+"""
 
 def run(prog, args):
     """Run the specified program."""
     load_plugins('init', globals())
-    initializers()
+    args = list(args)
+    initializers(prog, args)
     os.execvp(prog, (prog,) + tuple(args))
 
 def main(args=sys.argv[1:]):
