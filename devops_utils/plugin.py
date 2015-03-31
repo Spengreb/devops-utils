@@ -33,7 +33,7 @@ def get_plugins(type_, basedir=PLUGIN_DIR):
     dir = os.path.join(basedir, type_ + '_plugins')
     if not os.path.isdir(dir):
         return ()
-    return tuple(glob.glob(os.path.join(dir, '*.py')))
+    return tuple(sorted(glob.glob(os.path.join(dir, '*.py'))))
 
 def load_plugins(type_, globals, basedir=PLUGIN_DIR):
     """Load plugins of given type.
