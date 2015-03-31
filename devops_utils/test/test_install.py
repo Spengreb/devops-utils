@@ -26,7 +26,7 @@ import pytest
 
 import devops_utils
 
-from conftest import create_plugin
+from .conftest import create_plugin
 from devops_utils import install
 
 try:
