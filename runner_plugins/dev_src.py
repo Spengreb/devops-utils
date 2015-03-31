@@ -17,10 +17,12 @@
 # You should have received a copy of the GNU General Public License
 # along with devops-utils.  If not, see <http://www.gnu.org/licenses/>.
 
+
 @argparse_builder
 def argparse_dev_src(parser):
     parser.add_argument('++dev', action='store_true',
                         help='mount source instead of using copy in the image')
+
 
 @docker_run_builder
 def docker_run_dev_src(args, docker_run):
@@ -28,4 +30,4 @@ def docker_run_dev_src(args, docker_run):
         docker_run.docker_args.extend([
             '-v', '{}:/opt/app'.format(os.getcwd()),
             '-w', '/opt/app',
-            ])
+        ])

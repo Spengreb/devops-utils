@@ -18,6 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with devops-utils.  If not, see <http://www.gnu.org/licenses/>.
 
+
 class Builders(list):
     """A list of callables."""
     def __call__(self, *args):

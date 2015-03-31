@@ -18,9 +18,6 @@
 # You should have received a copy of the GNU General Public License
 # along with devops-utils.  If not, see <http://www.gnu.org/licenses/>.
 
-import os
-import sys
-
 try:
     from setuptools import setup
 except ImportError:

@@ -17,9 +17,11 @@
 # You should have received a copy of the GNU General Public License
 # along with devops-utils.  If not, see <http://www.gnu.org/licenses/>.
 
+
 @argparse_builder
 def argparse_ssh_key(parser):
     parser.add_argument('++key', help='SSH key to use')
+
 
 @docker_run_builder
 def docker_run_ssh_agent(args, docker_run):
@@ -27,7 +29,8 @@ def docker_run_ssh_agent(args, docker_run):
         return
     docker_run.docker_args.extend([
         '-v', '{}:/tmp/ssh_agent'.format(os.environ['SSH_AUTH_SOCK']),
-        ])
+    ])
+
 
 @docker_run_builder
 def docker_run_ssh_key(args, docker_run):
@@ -38,7 +41,8 @@ def docker_run_ssh_key(args, docker_run):
     # correct permissions; docker-init will do the rest
     docker_run.docker_args.extend([
         '-v', '{}:/var/local/ssh.key'.format(key),
-        ])
+    ])
+
 
 @docker_run_builder
 def docker_run_ssh_config(args, docker_run):
@@ -47,4 +51,4 @@ def docker_run_ssh_config(args, docker_run):
         return
     docker_run.docker_args.extend([
         '-v', '{}:/var/local/ssh_config'.format(src),
-        ])
+    ])

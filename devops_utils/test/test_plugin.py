@@ -22,10 +22,7 @@
 
 import os
 
-import pytest
-
-import devops_utils
-
+from devops_utils import plugin
 from .conftest import create_plugin
 
 
@@ -34,7 +31,6 @@ class TestLoadPlugins(object):
         create_plugin('init', 'test1', 'FOO = 1\n')
         create_plugin('init', 'test2', 'BAR = 2\n')
 
-        from devops_utils import plugin
         lst = plugin.get_plugins('init')
 
         assert lst == ('./init_plugins/test1.py', './init_plugins/test2.py')
@@ -43,7 +39,6 @@ class TestLoadPlugins(object):
         os.mkdir('subdir')
         create_plugin('subdir/runner', 'test', 'FOO = 1\n')
 
-        from devops_utils import plugin
         lst = plugin.get_plugins('runner', basedir='subdir')
 
         assert lst == ('subdir/runner_plugins/test.py',)
@@ -51,7 +46,6 @@ class TestLoadPlugins(object):
     def test_load(self, plugin_dir):
         create_plugin('init', 'test', 'BAR = FOO\nFOO = 2\n')
 
-        from devops_utils import plugin
         ctx = {'FOO': 1}
         plugin.load_plugins('init', ctx)
 

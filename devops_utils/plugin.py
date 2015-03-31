@@ -29,6 +29,7 @@ try:
     execfile
 except NameError:
     import tokenize
+
     def execfile(fn, globals):
         with tokenize.open(fn) as fobj:
             exec(fobj.read(), globals)
@@ -44,6 +45,7 @@ def get_plugins(type_, basedir=PLUGIN_DIR):
     if not os.path.isdir(dir):
         return ()
     return tuple(sorted(glob.glob(os.path.join(dir, '*.py'))))
+
 
 def load_plugins(type_, globals, basedir=PLUGIN_DIR):
     """Load plugins of given type.

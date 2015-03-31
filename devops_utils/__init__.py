@@ -28,5 +28,5 @@ __version__ = '0.1.0'
 PROGS = (
     'ansible', 'ansible-doc', 'ansible-galaxy', 'ansible-playbook',
     'ansible-vault', 'fab',
-    )
+)
 PLUGIN_DIR = '/etc/devops-utils'

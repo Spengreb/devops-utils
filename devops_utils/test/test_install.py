@@ -20,12 +20,9 @@
 
 """Tests for `devops_utils.install` module."""
 
-import os
 import sys
 
 import pytest
-
-import devops_utils
 
 from .conftest import create_plugin
 from devops_utils import install
@@ -64,6 +61,7 @@ FOO = 0
     ),
 ]
 
+
 class TestReplacer(object):
     # On Python 3 the Replacer.handle_module raises AttributeError:
     # "'AssertionRewritingHook' object has no attribute 'get_source'"
@@ -84,7 +82,10 @@ class TestReplacer(object):
                        reason='who knows, check comments for details')
     def test_replace(self, input, expected):
         input = StringIO(input)
-        context = {'PROGS': ('foo', 'bar'), 'DOCKER_IMAGE': 'test/devops-utils'}
+        context = {
+            'PROGS': ('foo', 'bar'),
+            'DOCKER_IMAGE': 'test/devops-utils',
+        }
         output = ''.join(list(install.Replacer(input, context)))
         assert output == expected
 

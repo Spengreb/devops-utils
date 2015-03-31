@@ -40,6 +40,7 @@ if sys.version_info[0] == 2:
 class InvalidOperator(Exception):
     """Invalid operation passed through Replacer."""
 
+
 class Replacer(object):
     """Used to insert/replace chunks of code in a stream of lines.
 
@@ -93,7 +94,7 @@ class Replacer(object):
                 op, _, param = match.group(1).partition(':')
                 try:
                     func = getattr(self, 'handle_{}'.format(op.lower()))
-                except AttributeError as e:
+                except AttributeError:
                     raise InvalidOperator(op)
                 param = (param,) if param else ()  # for parameterless handlers
                 line = func(*param)
@@ -102,6 +103,7 @@ class Replacer(object):
             else:
                 for generated in line:
                     yield generated
+
 
 def install(args):
     """Install a runner and shortcuts to all supported programs.
@@ -129,7 +131,7 @@ def install(args):
     print('installing runner')
     replacements = {'PROGS': PROGS, 'DOCKER_IMAGE': args.image_name}
     with open('external-runner', 'r') as sfobj,\
-         open('/target/devops-utils', 'w') as dfobj:
+            open('/target/devops-utils', 'w') as dfobj:
         for line in Replacer(sfobj, replacements):
             dfobj.write(line)
     shutil.copystat('external-runner', '/target/devops-utils')

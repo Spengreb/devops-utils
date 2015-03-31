@@ -29,10 +29,12 @@ import devops_utils
 
 devops_utils.PLUGIN_DIR = '.'
 
+
 @pytest.fixture
 def plugin_dir(monkeypatch, tmpdir):
     monkeypatch.chdir(tmpdir)
     return tmpdir
+
 
 def create_plugin(type_, name, contents):
     """Create a plugin for tests.

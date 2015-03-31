@@ -40,10 +40,12 @@ def install_file(src, dst, owner, group, mode):
     os.chown(dst, uid, gid)
     os.chmod(dst, mode)
 
+
 def install_file_if_exists(src, dst, owner, group, mode):
     if not os.path.exists(src):
         return
     install_file(src, dst, owner, group, mode)
+
 
 initializers = Builders()
 initfunc = initializers.append
@@ -57,12 +59,14 @@ it will be executed with.  The ``args`` list may be mutated to affect
 the final arguments.
 """
 
+
 def run(prog, args):
     """Run the specified program."""
     load_plugins('init', globals())
     args = list(args)
     initializers(prog, args)
     os.execvp(prog, (prog,) + tuple(args))
+
 
 def main(args=sys.argv[1:]):
     """Run a program in devops-utils container."""
