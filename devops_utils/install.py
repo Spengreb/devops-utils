@@ -24,12 +24,17 @@ import argparse
 import re
 import os
 import shutil
+import sys
 import textwrap
 
 from pkgutil import find_loader
 from subprocess import check_call, CalledProcessError
 
 from devops_utils import PROGS, plugin
+
+string_types = str
+if sys.version_info[0] == 2:
+    string_types = basestring
 
 
 class InvalidOperator(Exception):
@@ -64,7 +69,8 @@ class Replacer(object):
 
     def handle_module(self, mod):
         l = find_loader(mod)
-        return l.get_source()
+        n = getattr(l, 'fullname', getattr(l, 'name', None))
+        return l.get_source(n)
 
     def handle_plugins(self, type_):
         for fn in plugin.get_plugins('runner'):
@@ -91,7 +97,7 @@ class Replacer(object):
                     raise InvalidOperator(op)
                 param = (param,) if param else ()  # for parameterless handlers
                 line = func(*param)
-            if isinstance(line, basestring):
+            if isinstance(line, string_types):
                 yield line
             else:
                 for generated in line:

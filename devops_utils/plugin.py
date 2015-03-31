@@ -24,6 +24,16 @@ import os
 from devops_utils import PLUGIN_DIR
 
 
+# PY3 compat: execfile removed
+try:
+    execfile
+except NameError:
+    import tokenize
+    def execfile(fn, globals):
+        with tokenize.open(fn) as fobj:
+            exec(fobj.read(), globals)
+
+
 def get_plugins(type_, basedir=PLUGIN_DIR):
     """Return a tuple of filenames of plugins of a given type.
 
