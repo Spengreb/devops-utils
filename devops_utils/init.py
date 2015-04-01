@@ -22,6 +22,7 @@ from __future__ import print_function
 
 import argparse
 import grp
+import logging
 import os
 import pwd
 import shutil
@@ -60,22 +61,35 @@ the final arguments.
 """
 
 
+@initfunc
+def init_base(prog, args):
+    if 'DEVOPS_UTILS_DEBUG' not in os.environ:
+        return
+    logging.getLogger().setLevel(logging.DEBUG)
+
+
 def run(prog, args):
     """Run the specified program."""
     load_plugins('init', globals())
     args = list(args)
     initializers(prog, args)
+    logging.debug('%r', {'prog': prog, 'args': args})
+    logging.debug('cmd: %s', ' '.join([prog] + args))
     os.execvp(prog, (prog,) + tuple(args))
 
 
 def main(args=sys.argv[1:]):
     """Run a program in devops-utils container."""
+    logging.basicConfig(
+        format='(%(module)s:%(funcName)s:%(lineno)s) %(message)s',
+        level=logging.INFO)
+
     parser = argparse.ArgumentParser(description=main.__doc__, add_help=False)
     parser.add_argument('prog', help='program to run (e.g.: install, {})'.
                                      format(', '.join(PROGS)))
 
     args, prog_args = parser.parse_known_args(args)
-    print({'args': args, 'prog_args': prog_args})
+    logging.debug('%r', {'args': args, 'prog_args': prog_args})
 
     if args.prog == 'install':
         sys.exit(install(prog_args))

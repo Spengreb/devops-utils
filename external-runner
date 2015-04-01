@@ -21,6 +21,7 @@
 from __future__ import print_function
 
 import argparse
+import logging
 import os
 import sys
 import subprocess
@@ -32,10 +33,19 @@ DOCKER_IMAGE = 'gimoh/devops-utils'  ##INIT:VAR:DOCKER_IMAGE##
 
 class DockerRunCommand(object):
     """docker run command"""
-    def __init__(self, prog, prog_args):
-        self.docker_args = []
+    def __init__(self, prog, prog_args, docker_args=None):
+        self.docker_args = docker_args if docker_args else []
         self.prog = prog
         self.prog_args = list(prog_args)
+
+    def __repr__(self):
+        return '{}(docker_args={!r}, prog={!r}, prog_args={!r})'.format(
+            self.__class__.__name__,
+            self.docker_args, self.prog, self.prog_args)
+
+    def __str__(self):
+        return '{}<cmd: "{}">'.format(
+            self.__class__.__name__, ' '.join(self.cmd))
 
     @property
     def cmd(self):
@@ -61,6 +71,8 @@ def argparse_base(parser):
     else:
         parser.set_defaults(prog=self_name)
 
+    parser.add_argument('++debug', action='store_true',
+                        help='enable debugging output')
     parser.add_argument('+O', '++docker-opt', action='append',
                         help='pass specified long-style option to docker run')
     parser.add_argument('++help', action='store_true',
@@ -70,6 +82,8 @@ def argparse_base(parser):
 @docker_run_builder
 def docker_run_base(args, docker_run):
     docker_run.docker_args.extend('-i -t --rm'.split())
+    if args.debug:
+        docker_run.docker_args.extend(('-e', 'DEVOPS_UTILS_DEBUG=true'))
 
 @docker_run_builder
 def docker_run_opts(args, docker_run):
@@ -81,10 +95,18 @@ load_plugins('runner', globals(), basedir=BASEDIR)  ##INIT:PLUGINS:runner##
 
 def main(args=sys.argv[1:]):
     """Run a program in devops-utils container."""
+    logging.basicConfig(
+        format='(%(module)s:%(funcName)s:%(lineno)s) %(message)s',
+        level=logging.INFO)
+
     parser = argparse.ArgumentParser(description=main.__doc__, add_help=False,
                                      prefix_chars='+')
     argparse_builders(parser)
     args, prog_args = parser.parse_known_args(args)
+
+    if args.debug:
+        logging.getLogger().setLevel(logging.DEBUG)
+        logging.debug('%r', {'args': args, 'prog_args': prog_args})
 
     if args.help:
         parser.print_help()
@@ -92,6 +114,8 @@ def main(args=sys.argv[1:]):
 
     docker_run = DockerRunCommand(args.prog, prog_args)
     docker_run_builders(args, docker_run)
+    logging.debug('%r', {'docker_run': docker_run})
+    logging.debug('%s', docker_run)
 
     subprocess.check_call(docker_run.cmd)
 
