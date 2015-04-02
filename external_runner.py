@@ -18,6 +18,28 @@
 # You should have received a copy of the GNU General Public License
 # along with devops-utils.  If not, see <http://www.gnu.org/licenses/>.
 
+"""The external runner for the devops-utils image.
+
+Essentially wraps ``docker run -it --rm devops-utils``, providing
+options to make the usage more convenient.
+
+The :py:func:`main` here is the entrypoint of the devops-utils image
+runner program.  It parses the arguments and executes ``docker run``
+with appropriate arguments.
+
+:py:func:`argparse_builder` is a decorator that registers a function to
+be executed before argument parsing and can be used to add/modify
+options, change default values, etc.
+
+:py:func:`docker_run_builder` is a decorator that registers a function
+to be executed after argument parsing to modify the final command that
+will be run.
+
+:py:class:`DockerRunCommand` is a helper object encapsulating various
+arguments which can be modified by the functions decorated with
+:py:func:`docker_run_builder`.
+"""
+
 from __future__ import print_function
 
 import argparse
@@ -32,7 +54,25 @@ DOCKER_IMAGE = 'gimoh/devops-utils'  ##INIT:VAR:DOCKER_IMAGE##
 
 
 class DockerRunCommand(object):
-    """docker run command"""
+    """Encapsulates components of a docker run command.
+
+    The components (exposed as corresponding instance attributes) are:
+
+    .. py:attribute:: docker_args
+       (list) arguments for ``docker run``
+
+    .. py:attribute:: prog
+       (str) program to run inside the container
+
+    .. py:attribute:: prog_args
+       (list) arguments to the above program
+
+    All of the above are also accepted as constructor parameters.  All
+    of them can also be modified directly to affect the final command.
+
+    Exposes a property :py:meth:`cmd` which returns a fully assembled
+    list of docker command and arguments.
+    """
     def __init__(self, prog, prog_args, docker_args=None):
         self.docker_args = docker_args if docker_args else []
         self.prog = prog
@@ -49,6 +89,12 @@ class DockerRunCommand(object):
 
     @property
     def cmd(self):
+        """Return a fully assembled list of docker run command and arguments.
+
+        :returns: docker run command and arguments; list suitable for
+                  passing to :py:class:`subprocess.Popen`
+        :rtype: list
+        """
         cmd = ['docker', 'run']
         cmd.extend(self.docker_args)
         cmd.extend([DOCKER_IMAGE, self.prog])
@@ -60,7 +106,38 @@ argparse_builders = Builders()
 docker_run_builders = Builders()
 
 argparse_builder = argparse_builders.append
+"""Register decorated function as :py:class:`ArgumentParser` instance builder.
+
+These builders are executed before argument parsing and can be used to
+add/modify options, change default values, etc.
+
+The function signature should be:
+
+.. py:function:: func(parser : argparse.ArgumentParser) -> None
+
+   :param argparse.ArgumentParser parser: parser to modify
+"""
+
 docker_run_builder = docker_run_builders.append
+"""Register decorated function as ``docker run`` command builder.
+
+These builders are executed after argument parsing to modify the final
+command that will be run (either ``docker run`` or the program inside
+the container).
+
+The function signature should be:
+
+.. py:function:: func(args : argparse.Namespace, docker_run : DockerRunCommand) -> None
+
+   The function can modify ``docker_run`` object directly to affect the
+   final command that will be executed.
+
+   :param argparse.Namespace args:
+       arguments and options passed to the runner itself
+   :param DockerRunCommand docker_run:
+       object encapsulating arguments to ``docker_run`` and the command
+       to run inside the container
+"""
 
 @argparse_builder
 def argparse_base(parser):
@@ -94,7 +171,7 @@ BASEDIR=os.path.dirname(__file__)  ##INIT:SUPPRESS##
 load_plugins('runner', globals(), basedir=BASEDIR)  ##INIT:PLUGINS:runner##
 
 def main(args=sys.argv[1:]):
-    """Run a program in devops-utils container."""
+    """Run a program in a devops-utils container."""
     logging.basicConfig(
         format='(%(module)s:%(funcName)s:%(lineno)s) %(message)s',
         level=logging.INFO)

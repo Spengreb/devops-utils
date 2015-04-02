@@ -25,7 +25,7 @@ installation process.
 
 The :py:class:`Replacer`, used from within :py:func:`install`,
 implements a lightweight preprocessing/templating process, thanks to
-which the external-runner can be used as-is when installed as well as
+which the external runner can be used as-is when installed as well as
 directly from source.
 """
 
@@ -162,11 +162,11 @@ def install(args):
 
     print('installing runner')
     replacements = {'PROGS': PROGS, 'DOCKER_IMAGE': args.image_name}
-    with open('external-runner', 'r') as sfobj,\
+    with open('external_runner.py', 'r') as sfobj,\
             open('/target/devops-utils', 'w') as dfobj:
         for line in Replacer(sfobj, replacements):
             dfobj.write(line)
-    shutil.copystat('external-runner', '/target/devops-utils')
+    shutil.copystat('external_runner.py', '/target/devops-utils')
 
     print('installing links ... ', end='')
     for prog in PROGS:

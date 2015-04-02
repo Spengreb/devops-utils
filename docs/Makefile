@@ -52,7 +52,10 @@ clean:
 	rm -rf api
 
 apidoc:
-	$(SPHINXAPIDOC) -f -e -o api ../devops_utils
+	$(SPHINXAPIDOC) -f -e -o api ..
+	sed -i -r \
+	  -e '1c .. _api-modules:\n\nModules' -e '2c =======' \
+	  -e '/^\s*setup$$/d' api/modules.rst
 	@echo
 	@echo "Build finished. The API docs are in api/."
 

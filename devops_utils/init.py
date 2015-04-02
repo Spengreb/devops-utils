@@ -73,7 +73,7 @@ def install_file_if_exists(src, dst, owner, group, mode):
 
 initializers = Builders()
 initfunc = initializers.append
-"""Register function as initializer.
+"""Register decorated function as initializer.
 
 An initializer is executed on startup and can contribute to environment
 setup within the container.  The function signature should be:
