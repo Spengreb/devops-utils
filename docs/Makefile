@@ -53,6 +53,7 @@ clean:
 
 apidoc:
 	$(SPHINXAPIDOC) -f -e -o api ..
+	rm api/setup.rst
 	sed -i -r \
 	  -e '1c .. _api-modules:\n\nModules' -e '2c =======' \
 	  -e '/^\s*setup$$/d' api/modules.rst
