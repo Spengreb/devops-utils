@@ -52,7 +52,7 @@ clean:
 	rm -rf api
 
 apidoc:
-	$(SPHINXAPIDOC) -e -o api ../devops_utils
+	$(SPHINXAPIDOC) -f -e -o api ../devops_utils
 	@echo
 	@echo "Build finished. The API docs are in api/."
 

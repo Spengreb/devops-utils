@@ -18,6 +18,16 @@
 # You should have received a copy of the GNU General Public License
 # along with devops-utils.  If not, see <http://www.gnu.org/licenses/>.
 
+"""Implements plugin mechanism for the devops-utils image.
+
+The location of the root plugin directory is defined in main package:
+:py:data:`devops_utils.PLUGIN_DIR`.
+
+The function :py:func:`load_plugins` is used to load all plugins of a
+given type, whereas :py:func:`get_plugins` can be used to just get a
+list of paths to the plugin files.
+"""
+
 import glob
 import os
 
@@ -33,6 +43,9 @@ except NameError:
     def execfile(fn, globals):
         with tokenize.open(fn) as fobj:
             exec(fobj.read(), globals)
+
+
+__all__ = ('get_plugins', 'load_plugins')
 
 
 def get_plugins(type_, basedir=PLUGIN_DIR):

@@ -18,6 +18,20 @@
 # You should have received a copy of the GNU General Public License
 # along with devops-utils.  If not, see <http://www.gnu.org/licenses/>.
 
+"""Implements initialization process for a devops-utils container.
+
+The :py:func:`main` here is the entrypoint of the devops-utils image.
+It parses the arguments and delegates execution to appropriate handler
+(either :py:func:`run` or :py:func:`devops_utils.install.install`).
+
+Function :py:func:`run` handles initializing the environment,
+correspondingly to what the external runner has set up by passing
+appropriate options to docker.
+
+:py:func:`initfunc` is a decorator that registers a function to be
+executed during init (from :py:func:`run`).
+"""
+
 from __future__ import print_function
 
 import argparse
@@ -35,6 +49,14 @@ from devops_utils.plugin import load_plugins
 
 
 def install_file(src, dst, owner, group, mode):
+    """Install a file, set permissions and ownership.
+    
+    :param str src: path to the source
+    :param str dst: path to the destination
+    :param str owner: owner username
+    :param str group: group name
+    :param int mode: mode to set on the destination
+    """
     shutil.copy(src, dst)
     uid = pwd.getpwnam(owner).pw_uid
     gid = grp.getgrnam(group).gr_gid
@@ -43,6 +65,7 @@ def install_file(src, dst, owner, group, mode):
 
 
 def install_file_if_exists(src, dst, owner, group, mode):
+    """Install a file like :py:func:`install_file` if source exists."""
     if not os.path.exists(src):
         return
     install_file(src, dst, owner, group, mode)
@@ -53,11 +76,14 @@ initfunc = initializers.append
 """Register function as initializer.
 
 An initializer is executed on startup and can contribute to environment
-setup within the container.  The function will be executed with two
-arguments: ``prog`` and ``args``.  ``prog`` is the name/path to the
-program that will be executed by init.  ``args`` is a list of arguments
-it will be executed with.  The ``args`` list may be mutated to affect
-the final arguments.
+setup within the container.  The function signature should be:
+
+.. py:function:: func(prog : string, args : list) -> None
+
+   :param str prog: name/path to the program that will be executed by
+                    init
+   :param list args: arguments it will be executed with; may be mutated
+                     to affect the final arguments
 """
 
 

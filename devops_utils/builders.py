@@ -18,6 +18,19 @@
 # You should have received a copy of the GNU General Public License
 # along with devops-utils.  If not, see <http://www.gnu.org/licenses/>.
 
+"""Implements an extension mechanism for devops-utils image.
+
+Basically a list of callables (functions defined by plugins), with a
+simple interface to execute them with given parameters.
+
+.. sidebar:: NOTE
+
+   this module should be kept minimal, specifically without importing
+   anything else from the devops_utils or any other external package;
+   this is because this module is included in the runner, which doesn't
+   have access to the package when installed.
+"""
+
 
 class Builders(list):
     """A list of callables."""

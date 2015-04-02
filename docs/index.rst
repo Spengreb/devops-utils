@@ -16,8 +16,6 @@ Contents:
 Feedback
 ========
 
-If you have any suggestions or questions about **devops-utils** feel free to email me
-at gimoh@bitmessage.ch.
-
-If you encounter any errors or problems with **devops-utils**, please let me know!
-Open an Issue at the GitHub http://github.com/gimoh/devops-utils main repository.
+If you have any suggestions or questions or encounter any errors or
+problems with **devops-utils**, please let me know!  Open an Issue at
+the GitHub http://github.com/gimoh/devops-utils main repository.
