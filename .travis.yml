@@ -7,8 +7,14 @@ python:
   - "2.7"
   - "pypy"
 
+before_install:
+  - pip install coveralls
+
 install: 
   - pip install .
 
 script:
   - py.test devops_utils
+
+after_success:
+  - coveralls
