@@ -172,12 +172,13 @@ def install(args):
         'PROGS': PROGS,
         'RUNNER_NAME': args.runner_name,
     }
+    source = '/opt/devops-utils/external_runner.py'
     target = '/target/{}'.format(args.runner_name)
-    with open('external_runner.py', 'r') as sfobj,\
+    with open(source, 'r') as sfobj,\
             open(target, 'w') as dfobj:
         for line in Replacer(sfobj, replacements):
             dfobj.write(line)
-    shutil.copystat('external_runner.py', target)
+    shutil.copystat(source, target)
 
     if args.no_links:
         print('skipping links')
