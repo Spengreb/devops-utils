@@ -30,7 +30,8 @@ links:
 Replace `$HOME/.local/bin` with a directory where you want to place the
 runner.
 
-See [docs](http://devops-utils.rtfd.org/) for more details.
+See [docs](http://devops-utils.rtfd.org/en/latest/installation.html)
+for more details.
 
 
 ## Usage
@@ -58,4 +59,5 @@ Check all available runner options with:
 When using a derived image, the options, environment and startup
 process can be customised.
 
-See [docs](http://devops-utils.rtfd.org/) for more details.
+See [docs](http://devops-utils.rtfd.org/en/latest/usage.html) for more
+details.
