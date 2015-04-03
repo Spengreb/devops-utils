@@ -153,8 +153,6 @@ def argparse_base(parser):
                         help='enable debugging output')
     parser.add_argument('+O', '++docker-opt', action='append',
                         help='pass specified long-style option to docker run')
-    parser.add_argument('++help', action='store_true',
-                        help='show this help message and exit')
     parser.set_defaults(docker_opt=[])
 
 @docker_run_builder
@@ -172,12 +170,15 @@ BASEDIR=os.path.dirname(__file__)  ##INIT:SUPPRESS##
 load_plugins('runner', globals(), basedir=BASEDIR)  ##INIT:PLUGINS:runner##
 
 def main(args=sys.argv[1:]):
-    """Run a program in a devops-utils container."""
+    """Run a program in a devops-utils container.
+
+    To see install options run `%(prog)s install --help`.
+    """
     logging.basicConfig(
         format='(%(module)s:%(funcName)s:%(lineno)s) %(message)s',
         level=logging.INFO)
 
-    parser = argparse.ArgumentParser(description=main.__doc__, add_help=False,
+    parser = argparse.ArgumentParser(description=main.__doc__,
                                      prefix_chars='+')
     argparse_builders(parser)
     args, prog_args = parser.parse_known_args(args)
@@ -185,10 +186,6 @@ def main(args=sys.argv[1:]):
     if args.debug:
         logging.getLogger().setLevel(logging.DEBUG)
         logging.debug('%r', {'args': args, 'prog_args': prog_args})
-
-    if args.help:
-        parser.print_help()
-        parser.exit()
 
     docker_run = DockerRunCommand(args.prog, prog_args)
     docker_run_builders(args, docker_run)
