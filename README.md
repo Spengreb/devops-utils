@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/gimoh/devops-utils.svg?branch=master)](https://travis-ci.org/gimoh/devops-utils) [![Coverage Status](https://coveralls.io/repos/gimoh/devops-utils/badge.svg?branch=master)](https://coveralls.io/r/gimoh/devops-utils?branch=master) [![Documentation Status](https://readthedocs.org/projects/devops-utils/badge/?version=latest)](https://readthedocs.org/projects/devops-utils/?badge=latest)
+
 # devops-utils
 
 Docker image containing a set of utilities handy in a devops style
