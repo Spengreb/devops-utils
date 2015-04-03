@@ -27,3 +27,10 @@ when working with a derived image, you can override it::
 
     docker run -v $HOME/.local/bin:/target --rm gimoh/devops-utils \
       install --image-name=$USER/devops-utils
+
+You can also install the runner without the symlinks by passing
+``--no-link`` option, and you can override the target runner name by
+passing ``--runner-name=NAME`` option.  To see all available install
+options, run::
+
+    docker run --rm gimoh/devops-utils install --help

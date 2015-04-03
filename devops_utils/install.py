@@ -190,5 +190,5 @@ def install(args):
         if os.path.exists(link):
             print(' (skip)', end='')
         else:
-            os.symlink('devops-utils', link)
+            os.symlink(args.runner_name, link)
     print('')
