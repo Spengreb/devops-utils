@@ -147,6 +147,8 @@ def install(args):
     parser.add_argument(
         '--image-name', help=('name of docker image to use when running '
                               'commands via runner (def: %(default)s)'))
+    parser.add_argument('--no-links', action='store_true',
+                        help='only install the runner, skip the symlinks')
     parser.set_defaults(image_name='gimoh/devops-utils')
     args = parser.parse_args(args)
 
@@ -167,6 +169,10 @@ def install(args):
         for line in Replacer(sfobj, replacements):
             dfobj.write(line)
     shutil.copystat('external_runner.py', '/target/devops-utils')
+
+    if args.no_links:
+        print('skipping links')
+        return
 
     print('installing links ... ', end='')
     for prog in PROGS:
