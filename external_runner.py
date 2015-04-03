@@ -49,8 +49,9 @@ import sys
 import subprocess
 
 
-PROGS = ()  ##INIT:VAR:PROGS##
 DOCKER_IMAGE = 'gimoh/devops-utils'  ##INIT:VAR:DOCKER_IMAGE##
+PROGS = ()  ##INIT:VAR:PROGS##
+RUNNER_NAME = 'external_runner.py'  ##INIT:VAR:RUNNER_NAME##
 
 
 class DockerRunCommand(object):
@@ -142,7 +143,7 @@ The function signature should be:
 @argparse_builder
 def argparse_base(parser):
     self_name = os.path.basename(sys.argv[0])
-    if self_name in ('external-runner', 'devops-utils'):
+    if self_name in ('devops-utils', RUNNER_NAME):
         parser.add_argument('prog', help='program to run (e.g.: install, {})'.
                                         format(', '.join(PROGS)))
     else:

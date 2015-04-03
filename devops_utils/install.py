@@ -149,7 +149,11 @@ def install(args):
                               'commands via runner (def: %(default)s)'))
     parser.add_argument('--no-links', action='store_true',
                         help='only install the runner, skip the symlinks')
-    parser.set_defaults(image_name='gimoh/devops-utils')
+    parser.add_argument(
+        '--runner-name', '-n',
+        help='override the target runner name (def: %(default)s)')
+    parser.set_defaults(image_name='gimoh/devops-utils',
+                        runner_name='devops-utils')
     args = parser.parse_args(args)
 
     try:
@@ -162,13 +166,18 @@ def install(args):
             '''))
         return 2
 
-    print('installing runner')
-    replacements = {'PROGS': PROGS, 'DOCKER_IMAGE': args.image_name}
+    print("installing runner as `{}'".format(args.runner_name))
+    replacements = {
+        'DOCKER_IMAGE': args.image_name,
+        'PROGS': PROGS,
+        'RUNNER_NAME': args.runner_name,
+    }
+    target = '/target/{}'.format(args.runner_name)
     with open('external_runner.py', 'r') as sfobj,\
-            open('/target/devops-utils', 'w') as dfobj:
+            open(target, 'w') as dfobj:
         for line in Replacer(sfobj, replacements):
             dfobj.write(line)
-    shutil.copystat('external_runner.py', '/target/devops-utils')
+    shutil.copystat('external_runner.py', target)
 
     if args.no_links:
         print('skipping links')
