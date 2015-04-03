@@ -8,7 +8,7 @@ python:
   - "pypy"
 
 before_install:
-  - pip install coveralls
+  - pip install coveralls pytest-cov
 
 install: 
   - pip install .
