@@ -19,7 +19,7 @@ FROM ansible/ubuntu14.04-ansible:stable
 MAINTAINER gimoh <gimoh@bitmessage.ch>
 
 RUN apt-get -qq update && DEBIAN_FRONTEND=noninteractive apt-get install -qy \
-    git python-dev python-pip
+    git python-dev python-pip curl
 RUN pip install --upgrade pip
 RUN pip install Fabric
 RUN install -d -o root -g root -m 700 /root/.ssh
@@ -27,6 +27,9 @@ RUN mkdir /etc/devops-utils
 ADD . /opt/devops-utils
 RUN cd /opt/devops-utils && pip install . && \
     cp -r init_plugins runner_plugins /etc/devops-utils/
+ADD ["https://github.com/docker/machine/releases/download/v0.3.0/docker-machine_linux-amd64", \
+     "/usr/local/bin/docker-machine"]
+RUN chmod +x /usr/local/bin/docker-machine
 
 WORKDIR /opt/devops-utils
 ENTRYPOINT ["/usr/bin/ssh-agent", "/usr/local/bin/docker-init"]
