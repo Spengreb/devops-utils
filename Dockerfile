@@ -19,7 +19,7 @@ FROM ansible/ubuntu14.04-ansible:stable
 MAINTAINER gimoh <gimoh@bitmessage.ch>
 
 RUN apt-get -qq update && DEBIAN_FRONTEND=noninteractive apt-get install -qy \
-    git python-dev python-pip curl
+    git python-dev python-pip
 RUN pip install --upgrade pip
 RUN pip install Fabric
 RUN install -d -o root -g root -m 700 /root/.ssh
