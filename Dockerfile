@@ -30,6 +30,8 @@ RUN cd /opt/devops-utils && pip install . && \
 ADD ["https://github.com/docker/machine/releases/download/v0.3.0/docker-machine_linux-amd64", \
      "/usr/local/bin/docker-machine"]
 RUN chmod +x /usr/local/bin/docker-machine
+ENV MACHINE_STORAGE_PATH=/opt/devops-utils/docker-machine
+
 
 WORKDIR /opt/devops-utils
 ENTRYPOINT ["/usr/bin/ssh-agent", "/usr/local/bin/docker-init"]
