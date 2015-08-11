@@ -93,6 +93,26 @@ respected.
 Finally, you can pass ``++debug`` option to see how options are
 processed and how arguments to the programs are manipulated.
 
+docker-machine
+--------------
+
+It is possible to run ``docker-machine`` commands within the image.
+When using ``docker-machine``, it is important to pass the ``++dev``
+option, otherwise any changes (like adding new machines) are lost.
+
+``docker-machine`` saves configuration, like keys for servers, and
+in fact the names of what servers are managed in a configuration
+directory, in our image this defaults to ``/opt/app/.docker/machine``.
+
+An example of using ``docker-machine`` is::
+
+    devops-utils ++dev docker-machine upgrade fred
+
+which would execute the ``docker-machine upgrade`` command on host
+``fred``, with /opt/app mounted from current working directory.
+Running the above command in your home directory would pick up any
+previous ``docker-machine`` configuration, and would save anything
+that you change for use at a later date.
 
 .. _usage-extending:
 
