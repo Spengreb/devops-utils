@@ -14,6 +14,7 @@ Features
    - Ansible_
    - Fabric_
    - docker-machine
+   - IPython_, ptpython_ and konch_
 
  - external runner which wraps ``docker run`` to make it look like the
    utilities are installed on the host
@@ -24,6 +25,9 @@ Features
 .. _Ansible: http://www.ansible.com/
 .. _Fabric: http://www.fabfile.org/
 .. _docker-machine: http://www.docker.com
+.. _IPython: http://ipython.org/
+.. _ptpython: https://github.com/jonathanslenders/ptpython
+.. _konch: https://pypi.python.org/pypi/konch
 
 Contents:
 =========

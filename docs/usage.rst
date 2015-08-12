@@ -114,6 +114,46 @@ Running the above command in your home directory would pick up any
 previous ``docker-machine`` configuration, and would save anything
 that you change for use at a later date.
 
+Python Shell
+------------
+
+When developing, running or debugging in Python, e.g. Ansible modules
+or Fabric tasks, it's often useful to have a REPL.  That's why the
+image includes IPython_, ptpython_ and konch_.  You can just drop a
+``.konchrc`` python in your source tree, e.g.::
+
+    # -*- coding: utf-8 -*-
+    # vi: set ft=python :
+
+    import konch
+
+    import fabfile
+
+    from fabric import api as fa
+
+
+    konch.config({
+        'context': {
+            # fabric
+            'fa': fa,
+            'ft': fabfile,
+            'env': fa.env,
+            'run': fa.run,
+            'sudo': fa.sudo,
+        }
+    })
+
+and then run::
+
+    devops-utils ++dev konch
+
+and you get a Python REPL with syntax highlighting, completion and
+quick access to some Fabric operations and tasks.
+
+.. _IPython: http://ipython.org/
+.. _ptpython: https://github.com/jonathanslenders/ptpython
+.. _konch: https://pypi.python.org/pypi/konch
+
 .. _usage-extending:
 
 Extending
