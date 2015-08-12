@@ -28,7 +28,7 @@ ADD ["https://github.com/docker/machine/releases/download/v0.3.0/docker-machine_
 RUN chmod +x /usr/local/bin/docker-machine
 ENV MACHINE_STORAGE_PATH=/opt/app/.docker/machine
 
-RUN pip install Fabric
+RUN pip install Fabric ipython konch ptpython
 RUN install -d -o root -g root -m 700 /root/.ssh
 RUN mkdir /etc/devops-utils
 ADD . /opt/devops-utils
