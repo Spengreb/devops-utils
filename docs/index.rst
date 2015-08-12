@@ -13,6 +13,7 @@ Features
 
    - Ansible_
    - Fabric_
+   - docker-machine
 
  - external runner which wraps ``docker run`` to make it look like the
    utilities are installed on the host
@@ -22,6 +23,7 @@ Features
 
 .. _Ansible: http://www.ansible.com/
 .. _Fabric: http://www.fabfile.org/
+.. _docker-machine: http://www.docker.com
 
 Contents:
 =========

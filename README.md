@@ -13,6 +13,7 @@ Full documentation can be found on [RTFD](http://devops-utils.rtfd.org/).
  - built in utilities:
    - [Ansible](http://www.ansible.com/)
    - [Fabric](http://www.fabfile.org/)
+   - [docker-machine](http://www.docker.com/)
  - external runner which wraps `docker run` to make it look like the
    utilities are installed on the host
  - extensible startup process allowing derived images to customise
