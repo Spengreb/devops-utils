@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/gimoh/devops-utils.svg?branch=master)](https://travis-ci.org/gimoh/devops-utils) [![Coverage Status](https://coveralls.io/repos/gimoh/devops-utils/badge.svg?branch=master)](https://coveralls.io/r/gimoh/devops-utils?branch=master) [![Documentation Status](https://readthedocs.org/projects/devops-utils/badge/?version=latest)](https://readthedocs.org/projects/devops-utils/?badge=latest)
+[![Build Status](https://travis-ci.org/gimoh/devops-utils.svg?branch=master)](https://travis-ci.org/gimoh/devops-utils) [![Coverage Status](https://coveralls.io/repos/gimoh/devops-utils/badge.svg?branch=master)](https://coveralls.io/r/gimoh/devops-utils?branch=master) [![Documentation Status](https://readthedocs.org/projects/devops-utils/badge/?version=latest)](https://readthedocs.org/projects/devops-utils/?badge=latest) [![docker-image gimoh/devops-utils](https://img.shields.io/badge/docker--image-gimoh%2Fdevops--utils-blue.svg)](https://hub.docker.com/r/gimoh/devops-utils/)
 
 # devops-utils
 
