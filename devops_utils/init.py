@@ -50,7 +50,7 @@ from devops_utils.plugin import load_plugins
 
 def install_file(src, dst, owner, group, mode):
     """Install a file, set permissions and ownership.
-    
+
     :param str src: path to the source
     :param str dst: path to the destination
     :param str owner: owner username
