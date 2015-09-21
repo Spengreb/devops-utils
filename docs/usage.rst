@@ -114,6 +114,25 @@ Running the above command in your home directory would pick up any
 previous ``docker-machine`` configuration, and would save anything
 that you change for use at a later date.
 
+You can list machine configurations using::
+
+    devops-utils ++dev docker-machine ls
+
+If you build a derived image containing the stored configurations, you
+can of course drop the ``++dev`` option.
+
+docker
+------
+
+Command line docker client and python code using docker-py can be used
+against machines managed using ``docker-machine``.  To run a command
+against a specific machine, use e.g.::
+
+    devops-utils ++dm=NAME docker info
+
+This will activate machine ``NAME`` (using ``docker-machine env NAME``)
+before running the command (``docker`` CLI in this case).
+
 Python Shell
 ------------
 
