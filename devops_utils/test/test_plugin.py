@@ -43,6 +43,14 @@ class TestLoadPlugins(object):
 
         assert lst == ('subdir/runner_plugins/test.py',)
 
+    def test_get_plugins_pattern(self, plugin_dir):
+        create_plugin('init', 'test1', 'FOO = 1\n')
+        create_plugin('init', 'test2', 'BAR = 2\n')
+
+        lst = plugin.get_plugins('init', pattern='test2')
+
+        assert lst == ('./init_plugins/test2.py',)
+
     def test_load(self, plugin_dir):
         create_plugin('init', 'test', 'BAR = FOO\nFOO = 2\n')
 

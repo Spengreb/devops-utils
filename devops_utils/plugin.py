@@ -48,19 +48,20 @@ except NameError:
 __all__ = ('get_plugins', 'load_plugins')
 
 
-def get_plugins(type_, basedir=PLUGIN_DIR):
+def get_plugins(type_, basedir=PLUGIN_DIR, pattern='*'):
     """Return a tuple of filenames of plugins of a given type.
 
     :param str type_: type of plugins, i.e. init or runner
     :param str basedir: base directory to look up plugins in
+    :param str pattern: glob pattern to match against plugin names
     """
     dir = os.path.join(basedir, type_ + '_plugins')
     if not os.path.isdir(dir):
         return ()
-    return tuple(sorted(glob.glob(os.path.join(dir, '*.py'))))
+    return tuple(sorted(glob.glob(os.path.join(dir, pattern + '.py'))))
 
 
-def load_plugins(type_, globals, basedir=PLUGIN_DIR):
+def load_plugins(type_, globals, basedir=PLUGIN_DIR, pattern='*'):
     """Load plugins of given type.
 
     The plugin files are looked up in ${type}_plugins directory under
