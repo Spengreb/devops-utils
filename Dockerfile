@@ -22,10 +22,12 @@ RUN apt-get -qq update && DEBIAN_FRONTEND=noninteractive apt-get install -qy \
     git python-dev python-pip
 RUN pip install --upgrade pip
 
-# docker-machine installation
+# docker and docker-machine installation
+ADD ["https://get.docker.com/builds/Linux/x86_64/docker-latest", \
+     "/usr/local/bin/docker"]
 ADD ["https://github.com/docker/machine/releases/download/v0.3.0/docker-machine_linux-amd64", \
      "/usr/local/bin/docker-machine"]
-RUN chmod +x /usr/local/bin/docker-machine
+RUN chmod +x /usr/local/bin/docker*
 ENV MACHINE_STORAGE_PATH=/opt/app/.docker/machine
 
 RUN pip install Fabric ipython konch ptpython
