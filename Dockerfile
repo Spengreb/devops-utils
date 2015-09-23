@@ -18,8 +18,12 @@
 FROM ubuntu:14.04
 MAINTAINER gimoh <gimoh@bitmessage.ch>
 
-RUN apt-get -qq update && DEBIAN_FRONTEND=noninteractive apt-get install -qy \
-    git python-dev python-pip python-yaml python-paramiko python-keyczar
+RUN apt-get -qq update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -qy \
+        --no-install-recommends \
+        git openssh-client python-pip python-yaml python-paramiko \
+        python-keyczar rsync && \
+    apt-get clean && rm -rf /var/lib/apt/lists
 RUN pip install --upgrade pip
 
 # docker and docker-machine installation
