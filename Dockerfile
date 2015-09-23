@@ -15,11 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with devops-utils.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM ansible/ubuntu14.04-ansible:stable
+FROM ubuntu:14.04
 MAINTAINER gimoh <gimoh@bitmessage.ch>
 
 RUN apt-get -qq update && DEBIAN_FRONTEND=noninteractive apt-get install -qy \
-    git python-dev python-pip
+    git python-dev python-pip python-yaml python-paramiko python-keyczar
 RUN pip install --upgrade pip
 
 # docker and docker-machine installation
@@ -30,7 +30,10 @@ ADD ["https://github.com/docker/machine/releases/download/v0.3.0/docker-machine_
 RUN chmod +x /usr/local/bin/docker*
 ENV MACHINE_STORAGE_PATH=/opt/app/.docker/machine
 
-RUN pip install Fabric ipython konch ptpython
+RUN pip install ansible Fabric ipython konch ptpython
+RUN mkdir /etc/ansible && \
+    echo '[local]\nlocalhost  ansible_connection=local' > /etc/ansible/hosts
+
 RUN install -d -o root -g root -m 700 /root/.ssh
 RUN mkdir /etc/devops-utils
 ADD . /opt/devops-utils
