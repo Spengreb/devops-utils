@@ -29,8 +29,14 @@ RUN pip install --upgrade pip
 # docker and docker-machine installation
 ADD ["https://get.docker.com/builds/Linux/x86_64/docker-latest", \
      "/usr/local/bin/docker"]
-ADD ["https://github.com/docker/machine/releases/download/v0.3.0/docker-machine_linux-amd64", \
-     "/usr/local/bin/docker-machine"]
+RUN printf '%s\n' \
+    'import os, zipfile;' \
+    'from urllib import urlretrieve;' \
+    "urlretrieve('https://github.com/docker/machine/releases/download/v0.5.0/docker-machine_linux-amd64.zip', '/tmp/dm.zip');" \
+    "with zipfile.ZipFile('/tmp/dm.zip') as zf:" \
+    "  zf.extractall('/usr/local/bin/')" \
+    "os.unlink('/tmp/dm.zip')" \
+    |python
 RUN chmod +x /usr/local/bin/docker*
 ENV MACHINE_STORAGE_PATH=/opt/app/.docker/machine
 
