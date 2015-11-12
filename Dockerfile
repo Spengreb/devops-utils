@@ -40,7 +40,7 @@ RUN printf '%s\n' \
 RUN chmod +x /usr/local/bin/docker*
 ENV MACHINE_STORAGE_PATH=/opt/app/.docker/machine
 
-RUN pip install ansible Fabric ipython konch ptpython
+RUN pip install ansible docker-compose Fabric ipython konch ptpython
 RUN mkdir /etc/ansible && \
     echo '[local]\nlocalhost  ansible_connection=local' > /etc/ansible/hosts
 
