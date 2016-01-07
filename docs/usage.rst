@@ -121,17 +121,23 @@ You can list machine configurations using::
 If you build a derived image containing the stored configurations, you
 can of course drop the ``++dev`` option.
 
-docker
-------
+docker tools
+------------
 
-Command line docker client and python code using docker-py can be used
-against machines managed using ``docker-machine``.  To run a command
-against a specific machine, use e.g.::
+Command line docker client, docker-compose and python code using
+docker-py can be used against machines managed using
+``docker-machine``.  To run a command against a specific machine, use
+e.g.::
 
     devops-utils ++dm=NAME docker info
 
 This will activate machine ``NAME`` (using ``docker-machine env NAME``)
 before running the command (``docker`` CLI in this case).
+
+Similarly to deploy containers defined in docker compose file (in
+current directory) on machine ``NAME``::
+
+    devops-utils ++dev ++dm=NAME docker-compose up -d
 
 Python Shell
 ------------

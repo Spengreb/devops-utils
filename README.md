@@ -14,6 +14,7 @@ Full documentation can be found on [RTFD](http://devops-utils.rtfd.org/).
    - [Ansible](http://www.ansible.com/)
    - [Fabric](http://www.fabfile.org/)
    - [docker](http://www.docker.com/)
+   - [docker-compose](http://www.docker.com/)
    - [docker-machine](http://www.docker.com/)
    - [IPython](http://ipython.org/),
      [ptpython](https://github.com/jonathanslenders/ptpython) and
